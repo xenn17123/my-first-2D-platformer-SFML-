@@ -13,10 +13,15 @@ bool checkCollision_aabb(sf::FloatRect rect1, sf::FloatRect rect2)
 	return rect1.intersects(rect2);
 }
 
-bool checkCollision_Bullet_Solid(Bullet& bullet, Tile& tile)
+bool checkCollision_Bullet_SolidTile(Bullet& bullet, TileMap& tilemap)
 {
-	if (getGridposCalculated(bullet.worldpos) == (tile.gridpos))	return true;
-	
+	// collisions
+	sf::Vector2i gridpos = tilemap.getGridPos(bullet.worldpos);
+	std::string strpos = tilemap.getGridPosString(gridpos);
+	if (tilemap.ongridTileMap.contains(strpos) == true) {
+		
+		return true;
+	}
 	return false;
 }
 
@@ -45,8 +50,15 @@ bool Collision_Tilemap_PhysicsEntity(TileMap& tilemap, PhysicsEntity& entity)
 	return false;
 }
 
-bool collisionResponse_Bullet_SolidTile(Bullet& bullet, Tile& tile)
+bool collisionResponse_Bullet_SolidTile(Bullet& bullet, TileMap& tilemap)
 {
+	// collisions
+	sf::Vector2i gridpos = tilemap.getGridPos(bullet.worldpos);
+	std::string strpos = tilemap.getGridPosString(gridpos);
+	if (tilemap.ongridTileMap[strpos].type == "stone" || tilemap.ongridTileMap[strpos].type == "grass") {
+		bulletHitsTileAnimation(bullet.pos, bullet.flip);
+		bullet.setInactive();
+	}
 	return false;
 }
 

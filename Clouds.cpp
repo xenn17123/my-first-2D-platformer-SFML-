@@ -39,15 +39,6 @@ void Cloud::draw(sf::RenderWindow& window, sf::Vector2f& offset)
 
 
 
-
-
-
-
-
-
-
-
-
 // CLOUDS
 
 Clouds::Clouds()

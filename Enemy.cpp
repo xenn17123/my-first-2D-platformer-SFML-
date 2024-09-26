@@ -67,13 +67,17 @@ bool Enemy::shoot()
 bool Enemy::die()
 {
 
+	this->isDead = true;
+	this->setInactive();
+	//appendToBuffer("dies\n");
 	this->deathResponse();
 	return false;
 }
 
 bool Enemy::deathResponse()
 {
-	this->setInactive();
+	enemyDeathAnimation(this->pos);
+	//this->setInactive();
 	return false;
 }
 
@@ -121,24 +125,31 @@ void Enemy::update(TileMap& tilemap, sf::Vector2f movement)
 		if (this->walking) {
 			movement.x += (this->flip == false ? 1 : -1);
 			this->walking -= 1;
-			if (this->walking == 0) { // the frame on which the enmey stops
+			if (this->walking == 0) { // the frame on which the enemy stops
 				this->shoot();
 
-				appendToBuffer("shot by enemy\n");
+				//appendToBuffer("shot by enemy\n");
 			}
 		}
 		else if (randrangeint(0, 100) == 1) { // 1 in 100 chance per frame
 			this->walking = randrangeint(60, 120);
 		}
 
-		PhysicsEntity::update(tilemap, movement);
-
-
-		
-
 		if (movement.x == 0)		set_action("idle");
 		else						set_action("run");
-	}
+
+		PhysicsEntity::update(tilemap, movement);
+
+		if (this->health <= 0 && this->isDead == false) {
+			this->die();
+			this->death = true;
+			//appendToBuffer("enemy just died in enemy.cpp\n");
+		}
+
+	} // isActive conidition
+
+
+	// bullets need to update even if the enemy is dead
 	int temp_size = sizeof(bulletsArray) / sizeof(bulletsArray[0]);
 	for (int i = 0; i < temp_size; i++) {
 		this->bulletsArray[i].update(tilemap); // update bullets
@@ -154,6 +165,7 @@ void Enemy::draw(sf::RenderWindow& window, sf::Vector2f offset)
 	PhysicsEntity::draw(window, offset);
 
 	if (this->isActive) {
+		gunSprite.setPosition(gunSprite.getPosition() - offset);;
 		window.draw(gunSprite);
 	}
 

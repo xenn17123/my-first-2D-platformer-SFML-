@@ -1,17 +1,18 @@
 #include "Game.h"
 #include "utils.h"
 #include "Collisions.h"
+#include "Animation.h"
+
 
 // TODO:- 
-
 
 Game::Game()
 {
     window.create(sf::VideoMode(960, 720), "platformer dafluffypotato");
 	window.setFramerateLimit(60);
 	setWindowPtr(window);
-	
-	
+	InitializeSparks();
+
 	event = sf::Event();
 	assets = {
 		{ "grass"       , load_images("tiles/grass/")},
@@ -23,7 +24,7 @@ Game::Game()
 		{ "clouds"      , load_images("clouds/")},
 		{ "images"      , load_images("")},   // 0 = background, 1 = gun, 2 = projectile
 	};
-	
+
 	anim_assets = {
 		// player
 		{ "player/idle"        ,  Animation(load_images("entities/player/idle/"), 8, true)},
@@ -48,7 +49,6 @@ Game::Game()
 	
 	background = sf::Sprite(assets["images"][0]);
 	background.setScale(3, 3);
-
 
 	tilemap = TileMap();
 
@@ -80,21 +80,26 @@ Game::Game()
 	
 }
 
+
 void Game::run()
 {
 	while(window.isOpen())
 	{
 		window.clear(sf::Color(70, 170, 220));
+		Button buttontest;
+		buttontest.setPosition(100, 100);
 
 		window.draw(background);
-
+		
 
 		scroll += ((vecPlayers[0].pos + vecPlayers[0].size / 2) - (sf::Vector2f(window.getSize().x, window.getSize().y) / 2) - scroll) / 1.f;
 		sf::Vector2f fscroll = { float(int(scroll.x)) , float(int(scroll.y)) };
 
+		//screenShake(fscroll, 5);
 		this->gridoffset += fscroll; // total offset since start of game
 		tilemap.gridOffset = this->gridoffset;
 		
+		//fscroll =  screenShake(fscroll, 5);
 
 		// leaf particles spawns from trees
 		for (auto& rect : leaf_spawners) {
@@ -103,8 +108,7 @@ void Game::run()
 			if (rand() * 5 < rect.width * rect.height) {
 				sf::Vector2f pos_temp(rect.left + randrangefloat(0, 1) * rect.width, rect.top + randrangefloat(0, 1) * rect.height );
 				sf::Vector2f vel_temp(-0.15, 0.4);
-				this->particlesMap["leaf"].push_back(Particles("leaf", pos_temp, vel_temp, randrangeint(0, 17), anim_assets));
-				//std::cout << "particle spanwd now \n";
+				//this->particlesMap["leaf"].push_back(Particles("leaf", pos_temp, vel_temp, randrangeint(0, 17), anim_assets));
 			}
 
 			//draws leaf spawners rects on trees
@@ -154,8 +158,12 @@ void Game::run()
 				}
 				if (event.key.code == sf::Keyboard::X) {
 					//std::cout << "X\n";
-					//player.dash();
 					vecPlayers[0].dash();
+				}
+				if (event.key.code == sf::Keyboard::R) {
+					//std::cout << "R\n";
+					for (Enemy& enemy : vecEnemies)
+						enemy.Revive();
 				}
 			}
 			if (event.type == sf::Event::KeyReleased) {
@@ -213,11 +221,35 @@ void Game::run()
 		for (auto& enemy : vecEnemies) {
 			enemy.draw(window , fscroll);
 			enemy.update(tilemap, sf::Vector2f(0, 0));
+			
+			// if enemy dies
+			if (enemy.death) {
+
+			}
+
+			// bullet fuctionalities
 			for (auto& bulletIter : enemy.bulletsArray) {
-				if (checkCollision_Bullet_Player(bulletIter, vecPlayers[0])) { // player and bullet check collision test
-					collisionResponse_Bullet_Player(bulletIter, vecPlayers[0]);
+				
+				if (bulletIter.isactive) {
+
+					// player and bullet check collision test
+					if (checkCollision_Bullet_Player(bulletIter, vecPlayers[0])) { 
+						collisionResponse_Bullet_Player(bulletIter, vecPlayers[0]);
+					}
+
+					// tiles and bullet check collision test
+					if (checkCollision_Bullet_SolidTile(bulletIter, tilemap)) {
+						collisionResponse_Bullet_SolidTile(bulletIter, tilemap);
+					}
 				}
 			}
+		}
+		
+
+		// update and draw spark animations and effects
+		for (int i = 0; i < getSparkArraySize(); i++) {
+			getSparksArray()[i].update();
+			getSparksArray()[i].draw(window, fscroll);
 		}
 
 
@@ -242,6 +274,8 @@ void Game::run()
 				particlesMap["particle"][i].isVisible = false;
 			}
 		}
+		//buttontest.draw(window);
+		window.draw(buttontest);
 
 
 		window.display();
@@ -249,3 +283,4 @@ void Game::run()
 		getMainBuffer().clear();
 	}
 }
+

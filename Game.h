@@ -9,6 +9,8 @@
 #include "Animation.h"
 #include "Particles.h"
 #include "Bullet.h"
+#include "Spark.h"
+#include "StartMenu.h"
 
 
 
@@ -38,6 +40,7 @@ private:
 	std::vector<Particles> vecParticlesLeaf;
 	std::vector<Particles> vecParticlesparticle;
 
+
 	std::unordered_map<std::string, std::vector<Particles>> particlesMap;
 
 
@@ -51,10 +54,11 @@ public:
 	sf::Vector2f gridoffset = { 0,0 };
 	bool movement[2] = { false, false };
 
-
+	
 
 	Game();
 
 	void run();
+
 };
 

@@ -17,10 +17,7 @@ void setWindowPtr(sf::RenderWindow& windowptr);
 
 sf::RenderWindow* getWindowPtr();
 
-//void setGameptr(Game& game);
-
-//Game* getGameptr();
-
+sf::Vector2f screenShake(sf::Vector2f offset , float shakeRoughness);
 
 // random numbers
 int randrangeint(int min, int max);

@@ -34,9 +34,11 @@ public:
 	float deltaTime = 0;
 	bool isVisible = true;
 	bool isActive = true;
+	bool isDead = false;
 	bool isInvincible = false;    // bool to know if entity is in invincible state
 	bool flip;
 	float health = 5;
+	bool death = false; // true only on the frame when death occurs
 	
 
 	// collision things
@@ -74,6 +76,8 @@ public:
 	bool setInactive();
 
 	bool setActive();
+
+	bool Revive();
 
 	sf::Vector2i getGridpos();
 

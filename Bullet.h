@@ -14,6 +14,8 @@ public:
 
 	sf::Vector2f pos;
 	sf::Vector2f worldpos;
+	sf::Vector2f size;
+
 	float bulletSpeed = 0;
 	float lifetimer = 0;
 	bool isactive = false;
@@ -25,7 +27,9 @@ public:
 
 	void setActive(sf::Vector2f pos, sf::Vector2f worldpos, bool flip);
 
-	void setInactive(sf::Vector2f pos);
+	void setInactive(sf::Vector2f pos = {100, 100});
+
+	sf::FloatRect getCollisionFloatRect();
 
 	void update(TileMap& tilemap);
 

@@ -3,10 +3,12 @@
 #include "Game.h"
 #include "Editor.h"
 
-//TODO:-   make player damage enemies line 200 in Game.cpp
+//TODO:-   make a menu
+//TODO in future :-  make leaf particles in array(heap to stack)
 // errors : NONE 
 //D:\aa game projects\SFML\must complete(not practice)\platformer in VS\main(for mods)\Main.cpp
 // animation , editor , tilemap 
+
 
 int main() {
 

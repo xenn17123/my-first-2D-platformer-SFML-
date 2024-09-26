@@ -11,7 +11,7 @@
 bool checkCollision_aabb(sf::FloatRect rect1, sf::FloatRect rect2);
 
 // bullet and tile collision
-bool checkCollision_Bullet_Solid(Bullet& bullet, Tile& tile);
+bool checkCollision_Bullet_SolidTile(Bullet& bullet, TileMap& tilemap);
 
 // bullet and player collision
 bool checkCollision_Bullet_Player(Bullet& bullet, Player& player);
@@ -27,14 +27,9 @@ bool Collision_Tilemap_PhysicsEntity(TileMap& tilemap, PhysicsEntity& entity);
 
 
 
-//bool checkCollision_Bullet_Player(Bullet& bullet, Player& player);
-
-//bool checkCollision_Bullet_Player(Bullet& bullet, Player& player);
 
 
-
-
-bool collisionResponse_Bullet_SolidTile(Bullet& bullet, Tile& tile);
+bool collisionResponse_Bullet_SolidTile(Bullet& bullet, TileMap& tilemap);
 
 bool collisionResponse_Bullet_Player(Bullet& bullet, Player& player);
 

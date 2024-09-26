@@ -7,6 +7,8 @@ std::string BASE_IMAGE_PATH = "data/images/";
 std::string mainBuffer;
 sf::RenderWindow* windowPointer;
 
+sf::Vector2f screen_shake_offset{ randrangefloat(0,1), randrangefloat(0,1) };
+
 
 
 sf::Vector2i TileOffsets[9] = { {-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {0, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1} };
@@ -58,7 +60,6 @@ sf::RenderWindow* getWindowPtr()
 /// gives random number in a given range
 int randrangeint(int min, int max)
 {
-    //int a = (rand() % max) + min;
     return   (rand() % max) + min;
 }
 
@@ -80,6 +81,17 @@ std::string getgridposString(sf::Vector2i pos)
     return gpos;
 }
 
+
+
+sf::Vector2f screenShake(sf::Vector2f offset, float shakeRoughness)
+{
+    //screen_shake_offset = { randrangefloat(0,1), randrangefloat(0,1) };
+    screen_shake_offset.x *= -1;
+    screen_shake_offset.y *= -1;
+    sf::Vector2f Offter = offset + screen_shake_offset * shakeRoughness;
+
+    return Offter;
+}
 
 sf::Vector2i getStringtoVector2i(std::string pos)
 {

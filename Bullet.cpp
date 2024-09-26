@@ -12,8 +12,10 @@ Bullet::Bullet(sf::Texture& texture)
 
 	this->setTexture(texture);
 	this->pos = { 100, 100 };
+	this->size = { float(texture.getSize().x), float(texture.getSize().y) };
 	this->setPosition(this->pos);
 	this->setScale(2, 2);
+	this->size = this->size * this->getScale();
 	this->isactive = false;
 	
 }
@@ -39,12 +41,17 @@ void Bullet::setActive(sf::Vector2f pos, sf::Vector2f worldpos, bool flip)
 	this->isactive = true;
 }
 
-void Bullet::setInactive(sf::Vector2f pos = {100, 100})
+void Bullet::setInactive(sf::Vector2f pos)
 {
 	this->isactive = false;
 	this->bulletSpeed = 0;
 	this->pos = pos;
 	this->setPosition(this->pos);
+}
+
+sf::FloatRect Bullet::getCollisionFloatRect()
+{
+	return sf::FloatRect(this->pos + sf::Vector2f(0, 0), this->size + sf::Vector2f(0, 0));
 }
 
 void Bullet::update(TileMap& tilemap)
@@ -54,14 +61,14 @@ void Bullet::update(TileMap& tilemap)
 	this->worldpos.x = this->worldpos.x + bulletSpeed;
 
 	// collisions
-	sf::Vector2i gridpos = tilemap.getGridPos(this->worldpos);
-	std::string strpos = tilemap.getGridPosString(gridpos);
-	if (tilemap.ongridTileMap.contains(strpos) == true ) {
-		if (tilemap.ongridTileMap[strpos].type == "stone" || tilemap.ongridTileMap[strpos].type == "grass") {
-			this->setInactive();
-		}
+	//sf::Vector2i gridpos = tilemap.getGridPos(this->worldpos);
+	//std::string strpos = tilemap.getGridPosString(gridpos);
+	//if (tilemap.ongridTileMap.contains(strpos) == true ) {
+	//	if (tilemap.ongridTileMap[strpos].type == "stone" || tilemap.ongridTileMap[strpos].type == "grass") {
+	//		this->setInactive();
+	//	}
 
-	}
+	//}
 
 	char buffer[100];
 	sprintf_s(buffer, "lifetimer : %f\n", this->lifetimer); // log buffer
@@ -79,12 +86,13 @@ void Bullet::update(TileMap& tilemap)
 void Bullet::draw(sf::RenderWindow& window, sf::Vector2f offset)
 {
 	this->pos -= offset;
-	this->setPosition(this->pos);
+	this->setPosition(this->pos.x + this->size.x * flip, this->pos.y);
 
 
 
 	// to make hitbox for bullet
-	sf::FloatRect bulleRect(this->getGlobalBounds());
+	sf::FloatRect bulleRect(this->getCollisionFloatRect());
+	//sf::FloatRect bulleRect(this->getGlobalBounds());
 	sf::RectangleShape temp_rect;
 	temp_rect.setPosition(bulleRect.getPosition());
 	temp_rect.setSize(bulleRect.getSize());

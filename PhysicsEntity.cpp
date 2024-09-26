@@ -173,15 +173,16 @@ void PhysicsEntity::update(TileMap& tilemap, sf::Vector2f movement)
 
 		this->worldPos += temp_change_pos; // change in position is added to worldpos
 
-		if (this->health <= 0) {
+		// isDead is not turned true here so death code of child classes can run, isDead is to be flagged there
+		if (this->health <= 0 && this->isDead == false) { 
 			this->health = 0;
 			this->die();
+			//appendToBuffer("physicsEntity just died");
 		}
 
 		this->setPosition(this->pos); // position is set
 
 	}
-
 }
 
 sf::Vector2i PhysicsEntity::getGridpos()
@@ -257,6 +258,14 @@ bool PhysicsEntity::setInactive()
 bool PhysicsEntity::setActive()
 {
 	isActive = true;
+	return false;
+}
+
+bool PhysicsEntity::Revive()
+{
+	this->setActive();
+	this->isDead = false;
+	this->health = 1;
 	return false;
 }
 

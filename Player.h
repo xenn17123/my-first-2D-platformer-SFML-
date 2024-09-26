@@ -34,6 +34,8 @@ public:
 
 	bool jump();
 
+	bool controls();
+
 	bool dash();
 
 	bool damaged(float damage);
